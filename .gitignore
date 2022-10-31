@@ -2,5 +2,6 @@
 *.idea
 *.txt
 *.csv
+*.json
 out
 target

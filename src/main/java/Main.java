@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -11,8 +13,10 @@ public class Main {
         File file = new File("basket.txt");
         ClientLog logs = new ClientLog(price, products);
         File csvFile = new File("log.csv");
+        File jsonFile = new File("basket.json");
+        JSONObject basketJson = new JSONObject();
 
-        if (file.exists()) {
+        if (jsonFile.exists()) {
             System.out.println("Файл существует");
             try {
                 cart = Basket.loadFromTxtFile(file);
@@ -25,7 +29,7 @@ public class Main {
         } else {
             System.out.println("Файл не существует");
             try {
-                if (file.createNewFile()) {
+                if (jsonFile.createNewFile()) {
                     System.out.println("Файл для сохранения корзины создан!");
                 } else {
                     System.out.println("Файл для сохранения корзины не создан!");
@@ -54,7 +58,7 @@ public class Main {
                 int productNumber = Integer.parseInt(parts[0]) - 1;
                 int productCount = Integer.parseInt(parts[1]);
                 cart.addCart(productCount, productNumber);
-                cart.saveTxt(file);
+                cart.saveJson(jsonFile);
                 logs.log(productNumber, productCount);
                 if ((productNumber > products.length - 1) || (productNumber < 0)) {
                     System.out.println("Товара с таким номером нет в списке");

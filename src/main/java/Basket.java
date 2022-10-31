@@ -1,3 +1,6 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.*;
 
 public class Basket {
@@ -42,6 +45,33 @@ public class Basket {
             }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
+        }
+    }
+
+    protected void saveJson(File file) throws IOException {
+        JSONObject basketJson = new JSONObject();
+        JSONArray priceJson = new JSONArray();
+        JSONArray productsJson = new JSONArray();
+        JSONArray cartJson = new JSONArray();
+        for (int price1 : price) {
+            priceJson.add(price1);
+        }
+
+        for (String product : products) {
+            productsJson.add(product);
+        }
+
+        for (int cart1 : cart) {
+            cartJson.add(cart1 + " ");
+        }
+        basketJson.put("price", priceJson);
+        basketJson.put("products", productsJson);
+        basketJson.put("cart", cartJson);
+
+        try(FileWriter writer = new FileWriter(file.getName())) {
+            writer.write(basketJson.toJSONString());
+            writer.flush();
+
         }
     }
 
