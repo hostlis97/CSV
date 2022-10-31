@@ -8,15 +8,20 @@ public class Main {
         String products[] = {"Хлеб", "Яблоки", "Молоко"};
         int price[] = {100, 200, 300};
         Basket cart = new Basket(price, products);
-        File file = new File("basket.bin");
+        File file = new File("basket.txt");
+        ClientLog logs = new ClientLog(price, products);
+        File csvFile = new File("log.csv");
 
         if (file.exists()) {
             System.out.println("Файл существует");
             try {
-                cart = Basket.loadFromBinFile(file);
-            } catch (ClassNotFoundException e) {
+                cart = Basket.loadFromTxtFile(file);
+            } catch (IOException e) {
                 e.getMessage();
+            } catch (NumberFormatException e) {
+
             }
+
         } else {
             System.out.println("Файл не существует");
             try {
@@ -49,7 +54,8 @@ public class Main {
                 int productNumber = Integer.parseInt(parts[0]) - 1;
                 int productCount = Integer.parseInt(parts[1]);
                 cart.addCart(productCount, productNumber);
-                cart.saveBin(file, cart);
+                cart.saveTxt(file);
+                logs.log(productNumber, productCount);
                 if ((productNumber > products.length - 1) || (productNumber < 0)) {
                     System.out.println("Товара с таким номером нет в списке");
                     continue;
@@ -61,7 +67,10 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.println("неправильный формат двнных");
                 continue;
+            } catch (IOException e) {
+                e.getMessage();
             }
         }
+        logs.exportAsCSV(csvFile);
     }
 }
