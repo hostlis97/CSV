@@ -1,5 +1,7 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
 
@@ -53,27 +55,64 @@ public class Basket {
         JSONArray priceJson = new JSONArray();
         JSONArray productsJson = new JSONArray();
         JSONArray cartJson = new JSONArray();
+
         for (int price1 : price) {
             priceJson.add(price1);
         }
-
         for (String product : products) {
             productsJson.add(product);
         }
-
         for (int cart1 : cart) {
-            cartJson.add(cart1 + " ");
+            cartJson.add(cart1);
         }
+
         basketJson.put("price", priceJson);
         basketJson.put("products", productsJson);
         basketJson.put("cart", cartJson);
 
-        try(FileWriter writer = new FileWriter(file.getName())) {
+        try (FileWriter writer = new FileWriter(file.getName())) {
             writer.write(basketJson.toJSONString());
             writer.flush();
-
         }
     }
+
+    protected static Basket loadFromJsonFile(File file) throws IOException, NullPointerException, ParseException {
+        JSONParser parser = new JSONParser();
+        try {
+            Object obj = parser.parse(new FileReader(file.getName()));
+            JSONObject jsonObject = (JSONObject) obj;
+
+            JSONArray prices = (JSONArray) jsonObject.get("price");
+            JSONArray products = (JSONArray) jsonObject.get("products");
+            JSONArray carts = (JSONArray) jsonObject.get("cart");
+            int[] price = new int[prices.size()];
+            String[] product = new String[products.size()];
+            int[] cart = new int[carts.size()];
+
+            for (int i = 0; i < prices.size(); i++) {
+                price[i] = Integer.parseInt(String.valueOf(prices.get(i)));
+            }
+
+            for (int i = 0; i < products.size(); i++) {
+                product[i] = String.valueOf(products.get(i));
+            }
+            for (int i = 0; i < carts.size(); i++) {
+                cart[i] = Integer.parseInt(String.valueOf(carts.get(i)));
+            }
+
+            Basket basket = new Basket(price, product);
+            for (int i = 0; i < products.size(); i++) {
+                basket.addCart(cart[i], i);
+            }
+            return basket;
+
+
+        } catch (IOException | ParseException | NullPointerException e) {
+            e.getMessage();
+        }
+        return null;
+    }
+
 
     protected static Basket loadFromTxtFile(File file) throws IOException, NumberFormatException {
         try (BufferedReader br = new BufferedReader(new FileReader(file.getName()))) {

@@ -1,4 +1,5 @@
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,16 +15,18 @@ public class Main {
         ClientLog logs = new ClientLog(price, products);
         File csvFile = new File("log.csv");
         File jsonFile = new File("basket.json");
-        JSONObject basketJson = new JSONObject();
+
 
         if (jsonFile.exists()) {
             System.out.println("Файл существует");
             try {
-                cart = Basket.loadFromTxtFile(file);
+                cart = Basket.loadFromJsonFile(jsonFile);
             } catch (IOException e) {
                 e.getMessage();
             } catch (NumberFormatException e) {
 
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
         } else {
