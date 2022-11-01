@@ -1,4 +1,3 @@
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import java.io.File;
@@ -15,7 +14,8 @@ public class Main {
         ClientLog logs = new ClientLog(price, products);
         File csvFile = new File("log.csv");
         File jsonFile = new File("basket.json");
-
+        File xmlConfig = new File("shop.xml");
+        Config config = new Config(xmlConfig);
 
         if (jsonFile.exists()) {
             System.out.println("Файл существует");
