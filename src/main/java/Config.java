@@ -57,7 +57,7 @@ public class Config {
         List<String> list = new ArrayList<>();
         NodeList nodeList = doc.getElementsByTagName(xmlElement);
         Node first = nodeList.item(0);
-        System.out.println(first.getTextContent());
+        //System.out.println(first.getTextContent());
         String[] xmlElementChild = first.getTextContent().split("\n");
         for (int i = 0; i < xmlElementChild.length; i++) {
             list.add(xmlElementChild[i].trim());

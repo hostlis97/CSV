@@ -10,37 +10,68 @@ public class Main {
         String products[] = {"Хлеб", "Яблоки", "Молоко"};
         int price[] = {100, 200, 300};
         Basket cart = new Basket(price, products);
-        File file = new File("basket.txt");
         ClientLog logs = new ClientLog(price, products);
-        File csvFile = new File("log.csv");
-        File jsonFile = new File("basket.json");
         File xmlConfig = new File("shop.xml");
         Config config = new Config(xmlConfig);
+        File csvFile = new File(config.getLogFileName());
 
-        if (jsonFile.exists()) {
-            System.out.println("Файл существует");
-            try {
-                cart = Basket.loadFromJsonFile(jsonFile);
-            } catch (IOException e) {
-                e.getMessage();
-            } catch (NumberFormatException e) {
+        if (config.isLoadEenabled()) {
+            switch (config.loadFormat) {
+                case ("txt"):
+                    File loadTxtFile = new File(config.getLoadFileName());
+                    if (loadTxtFile.exists()) {
+                        System.out.println("Файл существует");
+                        try {
+                            cart = Basket.loadFromTxtFile(loadTxtFile);
+                        } catch (IOException e) {
+                            e.getMessage();
+                        } catch (NumberFormatException e) {
 
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+                        }
 
-        } else {
-            System.out.println("Файл не существует");
-            try {
-                if (jsonFile.createNewFile()) {
-                    System.out.println("Файл для сохранения корзины создан!");
-                } else {
-                    System.out.println("Файл для сохранения корзины не создан!");
-                }
-            } catch (IOException e) {
-                e.getMessage();
+                    } else {
+                        System.out.println("Файл не существует");
+                        try {
+                            if (loadTxtFile.createNewFile()) {
+                                System.out.println("Файл для сохранения корзины создан!");
+                            } else {
+                                System.out.println("Файл для сохранения корзины не создан!");
+                            }
+                        } catch (IOException e) {
+                            e.getMessage();
+                        }
+                    }
+                    break;
+                case ("json"):
+                    File loadJsonFile = new File(config.getLoadFileName());
+                    if (loadJsonFile.exists()) {
+                        System.out.println("Файл существует");
+                        try {
+                            cart = Basket.loadFromJsonFile(loadJsonFile);
+                        } catch (IOException e) {
+                            e.getMessage();
+                        } catch (NumberFormatException e) {
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        System.out.println("Файл не существует");
+                        try {
+                            if (loadJsonFile.createNewFile()) {
+                                System.out.println("Файл для сохранения корзины создан!");
+                            } else {
+                                System.out.println("Файл для сохранения корзины не создан!");
+                            }
+                        } catch (IOException e) {
+                            e.getMessage();
+                        }
+                    }
+                    break;
             }
         }
+
 
         for (int i = 0; i < products.length; i++) {
             System.out.println(i + 1 + ". " + products[i] + " " + price[i] + " руб/шт");
@@ -61,8 +92,22 @@ public class Main {
                 int productNumber = Integer.parseInt(parts[0]) - 1;
                 int productCount = Integer.parseInt(parts[1]);
                 cart.addCart(productCount, productNumber);
-                cart.saveJson(jsonFile);
-                logs.log(productNumber, productCount);
+                if (config.isSaveEenabled()) {
+                    switch (config.getSaveFormat()) {
+                        case ("txt"):
+                            File saveTxtFile = new File(config.getSaveFileName());
+                            cart.saveTxt(saveTxtFile);
+                            break;
+                        case ("json"):
+                            File saveJsonFile = new File(config.getSaveFileName());
+                            cart.saveJson(saveJsonFile);
+                            break;
+                    }
+                }
+
+                if (config.isLogEenabled()) {
+                    logs.log(productNumber, productCount);
+                }
                 if ((productNumber > products.length - 1) || (productNumber < 0)) {
                     System.out.println("Товара с таким номером нет в списке");
                     continue;
@@ -78,6 +123,8 @@ public class Main {
                 e.getMessage();
             }
         }
-        logs.exportAsCSV(csvFile);
+        if (config.isLogEenabled()) {
+            logs.exportAsCSV(csvFile);
+        }
     }
 }

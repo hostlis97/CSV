@@ -1,9 +1,9 @@
+import com.opencsv.CSVWriter;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import com.opencsv.CSVWriter;
 
 public class ClientLog {
 
@@ -15,8 +15,9 @@ public class ClientLog {
         this.price = price;
         this.products = products;
     }
+
     public void log(int productNumber, int productCount) {
-        logs.add(productNumber+1 + "," + productCount);
+        logs.add(productNumber + 1 + "," + productCount);
     }
 
     public void exportAsCSV(File csvFile) {
