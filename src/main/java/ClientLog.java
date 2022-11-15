@@ -16,13 +16,14 @@ public class ClientLog {
         this.products = products;
     }
     public void log(int productNumber, int productCount) {
-        logs.add(productNumber+1 + ", " + productCount);
+        logs.add(productNumber+1 + "," + productCount);
     }
 
     public void exportAsCSV(File csvFile) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile, true))) {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile.getName(), true))) {
             for (String log : logs) {
-                writer.writeNext(new String[]{log});
+                String logArrayCsv[] = log.split(",");
+                writer.writeNext(logArrayCsv);
             }
         } catch (IOException e) {
             e.printStackTrace();
