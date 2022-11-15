@@ -57,7 +57,6 @@ public class Config {
         List<String> list = new ArrayList<>();
         NodeList nodeList = doc.getElementsByTagName(xmlElement);
         Node first = nodeList.item(0);
-        //System.out.println(first.getTextContent());
         String[] xmlElementChild = first.getTextContent().split("\n");
         for (int i = 0; i < xmlElementChild.length; i++) {
             list.add(xmlElementChild[i].trim());
@@ -78,10 +77,6 @@ public class Config {
         return loadFormat;
     }
 
-    public List<String> getLoadList() {
-        return loadList;
-    }
-
     public boolean isSaveEenabled() {
         return saveEenabled;
     }
@@ -94,19 +89,11 @@ public class Config {
         return saveFormat;
     }
 
-    public List<String> getSaveList() {
-        return saveList;
-    }
-
     public boolean isLogEenabled() {
         return logEenabled;
     }
 
     public String getLogFileName() {
         return logFileName;
-    }
-
-    public List<String> getLogList() {
-        return logList;
     }
 }

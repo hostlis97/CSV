@@ -16,7 +16,7 @@ public class Main {
         File csvFile = new File(config.getLogFileName());
 
         if (config.isLoadEenabled()) {
-            switch (config.loadFormat) {
+            switch (config.getLoadFormat()) {
                 case ("txt"):
                     File loadTxtFile = new File(config.getLoadFileName());
                     if (loadTxtFile.exists()) {
